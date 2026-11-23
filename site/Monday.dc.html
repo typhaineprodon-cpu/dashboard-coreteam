@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Board Monday · Site</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F6F3}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="font-family: Inter, system-ui, sans-serif; color: #1A1A1A; background: #F6F6F3; min-height: 100vh; box-sizing: border-box; padding: 24px">
+<div style="max-width: 1360px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<aside aria-label="Espace de travail" style="flex: 1 1 220px; max-width: 100%; background: #1A1A1A; color: #FFFFFF; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #C9C9C2">Espace de travail</span>
+<span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 20px; font-weight: 700">Coreteam – Publicis</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; color: #C9C9C2">Boards</span>
+<a href="#" style="color: #FFFFFF; text-decoration: none; background: #34342F; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-weight: 600">Site · Projets</a>
+<a href="#" style="color: #FFFFFF; text-decoration: none; border-radius: 8px; padding: 10px 12px; font-size: 14px">Réunions internes &amp; clients</a>
+<a href="#" style="color: #FFFFFF; text-decoration: none; border-radius: 8px; padding: 10px 12px; font-size: 14px">Congés &amp; absences</a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; color: #C9C9C2">Dashboards</span>
+<a href="Main.dc.html" style="color: #FFFFFF; text-decoration: none; border-radius: 8px; padding: 10px 12px; font-size: 14px">Dashboard Site (widgets)</a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; color: #C9C9C2">Membres</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{members}}" as="m" hint-placeholder-count="6">
+<span style="font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; color: #FFFFFF; background: {{m.color}}">{{m.name}}</span>
+</sc-for>
+</div>
+</div>
+<p style="margin: 0; font-size: 12px; line-height: 1.5; color: #C9C9C2">Illustration des fonctionnalités Monday avec des données d'exemple, pas l'interface réelle.</p>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<header style="background: #FFFFFF; border: 1px solid #E4E4DF; border-radius: 16px; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 30px; font-weight: 700">Site · Projets</h1>
+<p style="margin: 0; font-size: 14px; color: #5B5B57">Un seul board, trois typologies : Refonte site, Application, Mise à jour site.</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{weeks}}" as="w" hint-placeholder-count="4">
+<button type="button" onClick="{{w.pick}}" aria-pressed="{{w.pressed}}" style="min-height: 44px; min-width: 64px; padding: 0 12px; border-radius: 10px; border: 1px solid #D6D6CF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; background: {{w.bg}}; color: {{w.fg}}">{{w.label}}</button>
+</sc-for>
+</div>
+</div>
+<nav aria-label="Vues du board" style="display: flex; flex-wrap: wrap; gap: 6px; border-top: 1px solid #EFEFEA; padding-top: 12px">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+<button type="button" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 0; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; background: {{t.bg}}; color: {{t.fg}}">{{t.label}}</button>
+</sc-for>
+</nav>
+</header>
+
+<sc-if value="{{isTable}}" hint-placeholder-val="{{ true }}">
+<section aria-label="Vue tableau" style="display: flex; flex-direction: column; gap: 18px">
+
+<div style="background: #FFFFFF; border: 1px solid #E4E4DF; border-radius: 14px; padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #3F3F3B; margin-right: 4px">Voir les échéances de :</span>
+<sc-for list="{{personFilters}}" as="f" hint-placeholder-count="7">
+<button type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="min-height: 44px; padding: 0 14px 0 6px; border-radius: 999px; border: 2px solid {{f.color}}; background: {{f.bg}}; color: {{f.fg}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px">
+<span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: {{f.avatarFg}}; background: {{f.avatarBg}}">{{f.ini}}</span>{{f.label}}
+</button>
+</sc-for>
+</div>
+
+<sc-if value="{{hasPerson}}" hint-placeholder-val="{{ false }}">
+<div style="background: #FFFFFF; border: 2px solid {{sel.color}}; border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #FFFFFF; background: {{sel.color}}">{{sel.ini}}</span>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">Prochaines échéances de {{sel.name}}</h2>
+<span style="font-size: 13px; color: #5B5B57">{{current.label}} · {{current.range}} · change de semaine en haut à droite</span>
+</div>
+</div>
+<sc-if value="{{noDeadlines}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; font-size: 14px; color: #5B5B57">Aucune échéance à venir pour {{sel.name}} cette semaine.</p>
+</sc-if>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{deadlines}}" as="t" hint-placeholder-count="3">
+<li style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 10px 12px; border-radius: 10px; background: #F6F6F3">
+<span style="display: flex; flex-direction: column; gap: 2px; padding: 6px 12px; border-radius: 8px; min-width: 130px; background: {{t.dueBg}}; color: {{t.dueFg}}">
+<span style="font-size: 15px; font-weight: 700">{{t.due}}</span>
+<span style="font-size: 12px; font-weight: 600">{{t.dueRel}}</span>
+</span>
+<span style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 3px; min-width: 0">
+<span style="font-size: 15px; font-weight: 600">{{t.name}}</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #3F3F3B"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 2px; background: {{t.color}}"></span>{{t.project}} · {{t.phase}}</span>
+</span>
+<span style="font-size: 13px; font-weight: 600; color: #FFFFFF; padding: 4px 12px; border-radius: 999px; background: {{t.statusColor}}">{{t.status}}</span>
+</li>
+</sc-for>
+</ul>
+</div>
+</sc-if>
+
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<div style="background: #FFFFFF; border: 1px solid #E4E4DF; border-radius: 14px; overflow: hidden">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 18px; border-left: 6px solid {{g.color}}">
+<h2 style="margin: 0; font-size: 16px; font-weight: 700">{{g.name}}</h2>
+<span style="font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: {{g.tint}}">{{g.type}}</span>
+<span style="font-size: 13px; color: #5B5B57">{{g.count}}</span>
+</div>
+
+<div style="overflow-x: auto; background: #FAFAF7; border-top: 1px solid #EFEFEA">
+<div aria-label="Mini timeline de la semaine" style="min-width: 640px; padding: 12px 18px 14px; display: grid; grid-template-columns: 110px repeat(5, minmax(0, 1fr)); gap: 6px; align-items: start">
+<span style="font-size: 12px; font-weight: 700; color: #3F3F3B; padding-top: 2px">{{current.label}}</span>
+<sc-for list="{{g.mini}}" as="d" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-size: 12px; font-weight: {{d.weight}}; color: {{d.fg}}">{{d.label}}</span>
+<span style="height: 26px; border-radius: 6px; display: flex; align-items: center; padding: 0 8px; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: {{d.phaseBg}}; color: {{d.phaseFg}}">{{d.phase}}</span>
+<sc-for list="{{d.dues}}" as="u" hint-placeholder-count="1">
+<span title="{{u.name}}" style="display: flex; align-items: center; gap: 6px; font-size: 12px; min-width: 0"><span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; color: #FFFFFF; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; background: {{u.color}}">{{u.ini}}</span><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{u.name}}</span></span>
+</sc-for>
+</div>
+</sc-for>
+<span style="grid-column: 1; font-size: 11px; color: #5B5B57">Phase · échéances</span>
+</div>
+</div>
+
+<sc-if value="{{g.empty}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; padding: 14px 18px; font-size: 14px; color: #5B5B57; border-top: 1px solid #EFEFEA">Aucune tâche pour {{sel.name}} sur ce projet.</p>
+</sc-if>
+<sc-if value="{{g.notEmpty}}" hint-placeholder-val="{{ true }}">
+<div style="overflow-x: auto">
+<div role="table" aria-label="{{g.name}}" style="min-width: 1020px">
+<div role="row" style="display: grid; grid-template-columns: minmax(0, 2fr) 140px 112px 140px 150px 160px 110px; background: #F6F6F3; font-size: 12px; font-weight: 600; color: #5B5B57">
+<span role="columnheader" style="padding: 8px 18px">Tâche</span>
+<span role="columnheader" style="padding: 8px 12px">Personne</span>
+<span role="columnheader" style="padding: 8px 12px">Statut</span>
+<span role="columnheader" style="padding: 8px 12px">Phase</span>
+<span role="columnheader" style="padding: 8px 12px">Timeline</span>
+<span role="columnheader" style="padding: 8px 12px">Échéance</span>
+<span role="columnheader" style="padding: 8px 12px">Doc</span>
+</div>
+<sc-for list="{{g.tasks}}" as="t" hint-placeholder-count="4">
+<div role="row" style="display: grid; grid-template-columns: minmax(0, 2fr) 140px 112px 140px 150px 160px 110px; border-top: 1px solid #EFEFEA; align-items: stretch; font-size: 14px">
+<span role="cell" style="padding: 10px 18px; display: flex; align-items: center; font-weight: 500">{{t.name}}</span>
+<span role="cell" style="padding: 6px 8px; display: flex; align-items: center">
+<button type="button" onClick="{{t.pickPerson}}" aria-label="Voir les échéances de {{t.who}}" style="min-height: 44px; border: 0; background: transparent; padding: 0 6px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; color: #1A1A1A; display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; background: {{t.whoColor}}">{{t.whoIni}}</span>{{t.who}}</button>
+</span>
+<span role="cell" style="display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #FFFFFF; background: {{t.statusColor}}">{{t.status}}</span>
+<span role="cell" style="padding: 10px 12px; display: flex; align-items: center; color: #3F3F3B; font-size: 13px">{{t.phase}}</span>
+<span role="cell" style="padding: 10px 12px; display: flex; align-items: center; color: #1A1A1A; font-size: 13px; font-weight: 500">{{t.span}}</span>
+<span role="cell" style="padding: 6px 10px; display: flex; align-items: center">
+<span style="display: flex; flex-direction: column; gap: 1px; padding: 5px 10px; border-radius: 8px; width: 100%; background: {{t.dueBg}}; color: {{t.dueFg}}">
+<span style="font-size: 14px; font-weight: 700">{{t.due}}</span>
+<span style="font-size: 12px; font-weight: 600">{{t.dueRel}}</span>
+</span>
+</span>
+<span role="cell" style="padding: 10px 12px; display: flex; align-items: center"><a href="#" style="font-size: 13px">{{t.doc}}</a></span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</section>
+</sc-if>
+<sc-if value="{{isGantt}}" hint-placeholder-val="{{ false }}">
+<section aria-label="Vue Gantt" style="background: #FFFFFF; border: 1px solid #E4E4DF; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">Gantt · 16 nov. → 11 déc.</h2>
+<span style="font-size: 13px; color: #5B5B57">Trait rouge = aujourd'hui · zone grisée = semaine sélectionnée · survole une barre pour voir la phase</span>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 1100px; display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: 210px repeat(20, minmax(44px, 1fr)); align-items: end">
+<span style="grid-column: 1; grid-row: 1 / span 2; font-size: 12px; font-weight: 600; color: #5B5B57; padding-bottom: 6px">Projet / phase</span>
+<sc-for list="{{weeks}}" as="w" hint-placeholder-count="4">
+<span style="grid-row: 1; grid-column: {{w.col}}; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 6px 6px 0 0; background: {{w.band}}">{{w.label}}</span>
+</sc-for>
+<sc-for list="{{days}}" as="d" hint-placeholder-count="20">
+<span style="grid-row: 2; grid-column: {{d.col}}; text-align: center; font-size: 12px; padding: 4px 0 6px; font-weight: {{d.weight}}; color: {{d.fg}}; background: {{d.band}}">{{d.label}}</span>
+</sc-for>
+</div>
+<sc-for list="{{gantt}}" as="r" hint-placeholder-count="3">
+<div style="border-top: 1px solid #E4E4DF; padding: 6px 0">
+<div style="display: grid; grid-template-columns: 210px repeat(20, minmax(44px, 1fr)); grid-template-rows: 30px; align-items: center">
+<span style="grid-column: 1; grid-row: 1; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; padding-right: 10px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; background: {{r.color}}"></span>{{r.name}}</span>
+<span aria-hidden="true" style="grid-row: 1; grid-column: {{r.weekCol}}; align-self: stretch; background: #F1F1EC"></span>
+<span title="{{r.name}}" style="grid-row: 1; grid-column: {{r.span}}; height: 10px; border-radius: 5px; background: {{r.color}}; opacity: 0.35; position: relative; z-index: 1"></span>
+<span aria-hidden="true" style="grid-row: 1; grid-column: {{r.todayCol}}; align-self: stretch; width: 2px; justify-self: center; background: #DC2626; position: relative; z-index: 2"></span>
+</div>
+<sc-for list="{{r.phases}}" as="ph" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 210px repeat(20, minmax(44px, 1fr)); grid-template-rows: 28px; align-items: center">
+<span style="grid-column: 1; grid-row: 1; font-size: 13px; color: #3F3F3B; padding-left: 18px">{{ph.name}}</span>
+<span aria-hidden="true" style="grid-row: 1; grid-column: {{r.weekCol}}; align-self: stretch; background: #F1F1EC"></span>
+<span title="{{ph.name}}" style="grid-row: 1; grid-column: {{ph.col}}; height: 20px; margin: 0 2px; border-radius: 5px; background: {{r.color}}; position: relative; z-index: 1"></span>
+<span aria-hidden="true" style="grid-row: 1; grid-column: {{r.todayCol}}; align-self: stretch; width: 2px; justify-self: center; background: #DC2626; position: relative; z-index: 2"></span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isCal}}" hint-placeholder-val="{{ false }}">
+<section aria-label="Vue calendrier hebdomadaire" style="background: #FFFFFF; border: 1px solid #E4E4DF; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">Calendrier · {{current.label}} ({{current.range}})</h2>
+<span style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: #3F3F3B">
+<sc-for list="{{legend}}" as="l" hint-placeholder-count="3">
+<span style="display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: {{l.color}}"></span>{{l.label}}</span>
+</sc-for>
+<span style="display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #475569"></span>Réunion interne</span>
+<span style="display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #7C3AED"></span>Réunion client</span>
+</span>
+</div>
+<div style="overflow-x: auto">
+<div role="table" aria-label="Planning par membre et par jour" style="min-width: 980px; display: flex; flex-direction: column; gap: 8px">
+<div role="row" style="display: grid; grid-template-columns: 130px repeat(5, minmax(0, 1fr)); gap: 8px">
+<span role="columnheader" style="font-size: 12px; font-weight: 600; color: #5B5B57; padding: 6px 0">Membre</span>
+<sc-for list="{{weekDays}}" as="d" hint-placeholder-count="5">
+<span role="columnheader" style="font-size: 13px; font-weight: 700; padding: 6px 10px; border-radius: 8px; background: {{d.bg}}; color: {{d.fg}}">{{d.label}}</span>
+</sc-for>
+</div>
+<sc-for list="{{calendar}}" as="p" hint-placeholder-count="6">
+<div role="row" style="display: grid; grid-template-columns: 130px repeat(5, minmax(0, 1fr)); gap: 8px; align-items: stretch">
+<span role="rowheader" style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; border-left: 4px solid {{p.color}}; padding-left: 8px"><span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; background: {{p.color}}">{{p.ini}}</span>{{p.name}}</span>
+<sc-for list="{{p.cells}}" as="c" hint-placeholder-count="5">
+<div role="cell" style="min-height: 84px; display: flex; flex-direction: column; gap: 4px; padding: 6px; border-radius: 10px; background: #FAFAF7; border: 1px solid #EFEFEA; box-sizing: border-box">
+<sc-if value="{{c.off}}" hint-placeholder-val="{{ false }}">
+<span style="flex: 1; border: 1px dashed #CFCFC8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5B5B57">Congé</span>
+</sc-if>
+<sc-if value="{{c.free}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 12px; color: #5B5B57; padding: 4px">Libre</span>
+</sc-if>
+<sc-for list="{{c.tasks}}" as="t" hint-placeholder-count="2">
+<span style="border-radius: 8px; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; background: {{t.tint}}">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #3F3F3B"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; background: {{t.color}}"></span>{{t.project}}</span>
+<span style="font-size: 12px; font-weight: 600; color: #1A1A1A; line-height: 1.3">{{t.name}}</span>
+<sc-if value="{{t.isDue}}" hint-placeholder-val="{{ false }}"><span style="align-self: flex-start; font-size: 11px; font-weight: 700; color: #FFFFFF; background: #B91C1C; border-radius: 999px; padding: 1px 8px">Échéance</span></sc-if>
+</span>
+</sc-for>
+<sc-for list="{{c.meetings}}" as="m" hint-placeholder-count="0">
+<span style="font-size: 12px; font-weight: 600; color: #FFFFFF; border-radius: 6px; padding: 4px 8px; background: {{m.color}}">{{m.time}} {{m.title}}</span>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isLoad}}" hint-placeholder-val="{{ false }}">
+<section aria-label="Vue workload" style="background: #FFFFFF; border: 1px solid #E4E4DF; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: baseline">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">Workload · {{current.label}} ({{current.range}})</h2>
+<span style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: #3F3F3B">
+<span style="display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 3px; background: #1D4ED8"></span>Dans la capacité (≤ 7 h)</span>
+<span style="display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 3px; background: #B91C1C"></span>Surcharge (&gt; 7 h)</span>
+</span>
+</div>
+<p style="margin: 0; font-size: 13px; color: #5B5B57">Estimation : 3 h par tâche active ce jour-là + 1 h par réunion.</p>
+<div style="overflow-x: auto">
+<div role="table" aria-label="Heures planifiées par jour" style="min-width: 760px; display: flex; flex-direction: column; gap: 6px">
+<div role="row" style="display: grid; grid-template-columns: 130px repeat(5, minmax(0, 1fr)) 80px; gap: 10px; font-size: 12px; font-weight: 600; color: #5B5B57">
+<span role="columnheader">Membre</span>
+<sc-for list="{{weekDays}}" as="d" hint-placeholder-count="5"><span role="columnheader">{{d.label}}</span></sc-for>
+<span role="columnheader">Total</span>
+</div>
+<sc-for list="{{load}}" as="p" hint-placeholder-count="6">
+<div role="row" style="display: grid; grid-template-columns: 130px repeat(5, minmax(0, 1fr)) 80px; gap: 10px; align-items: center; min-height: 52px; border-top: 1px solid #EFEFEA">
+<span role="rowheader" style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; background: {{p.color}}">{{p.ini}}</span>{{p.name}}</span>
+<sc-for list="{{p.days}}" as="d" hint-placeholder-count="5">
+<span role="cell" style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; color: #3F3F3B">{{d.label}}</span>
+<span aria-hidden="true" style="height: 10px; border-radius: 5px; background: #EDEDE8; display: flex; overflow: hidden"><span style="height: 10px; width: {{d.pct}}; background: {{d.color}}"></span></span>
+</span>
+</sc-for>
+<span role="cell" style="font-size: 14px; font-weight: 700">{{p.total}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</sc-if>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px">
+<div style="background: #FFFFFF; border: 1px solid #E4E4DF; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 700">Automatisations utiles</h2>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.45">
+<li style="background: #F6F6F3; border-radius: 10px; padding: 10px 12px"><strong>Quand</strong> le statut passe à « Bloqué », <strong>l'ajouter</strong> aux points de blocage et notifier le lead</li>
+<li style="background: #F6F6F3; border-radius: 10px; padding: 10px 12px"><strong>Quand</strong> une phase passe à « OK », <strong>créer</strong> les tâches de la phase suivante (ex. Maquettes V1 → V2)</li>
+<li style="background: #F6F6F3; border-radius: 10px; padding: 10px 12px"><strong>Chaque lundi à 9 h</strong>, <strong>publier</strong> les next steps de la semaine dans Teams</li>
+<li style="background: #F6F6F3; border-radius: 10px; padding: 10px 12px"><strong>Quand</strong> une réunion client est créée, <strong>l'ajouter</strong> au calendrier Outlook des participants</li>
+</ul>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E4E4DF; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 700">Colonnes du board</h2>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+<li style="background: #F6F6F3; border-radius: 999px; padding: 6px 12px">Tâche</li>
+<li style="background: #F6F6F3; border-radius: 999px; padding: 6px 12px">Personne</li>
+<li style="background: #F6F6F3; border-radius: 999px; padding: 6px 12px">Statut : To do / En cours / OK / Bloqué</li>
+<li style="background: #F6F6F3; border-radius: 999px; padding: 6px 12px">Phase (11 valeurs)</li>
+<li style="background: #F6F6F3; border-radius: 999px; padding: 6px 12px">Typologie de projet</li>
+<li style="background: #F6F6F3; border-radius: 999px; padding: 6px 12px">Timeline (début → fin)</li>
+<li style="background: #F6F6F3; border-radius: 999px; padding: 6px 12px">Lien doc (SharePoint, Figma)</li>
+<li style="background: #F6F6F3; border-radius: 999px; padding: 6px 12px">Point de blocage (texte)</li>
+</ul>
+</div>
+</section>
+
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+var WEEKS = [
+  { label: 'S47', range: '16–20 nov.' }, { label: 'S48', range: '23–27 nov.' },
+  { label: 'S49', range: '30 nov.–4 déc.' }, { label: 'S50', range: '7–11 déc.' }
+];
+var DAY_NUMS = [16,17,18,19,20, 23,24,25,26,27, 30,1,2,3,4, 7,8,9,10,11];
+var DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
+var TODAY = 2;
+function dayLabel(i) { return DAY_NAMES[i % 5] + ' ' + DAY_NUMS[i] + (i >= 11 ? ' déc.' : ' nov.'); }
+function dayShort(i) { return DAY_NAMES[i % 5] + ' ' + DAY_NUMS[i]; }
+function calDay(i) { return i + 2 * Math.floor(i / 5); }
+var PROJECTS = [
+  { name: 'Refonte site [Client A]', short: 'Refonte [A]', type: 'Refonte site', color: '#2563EB', tint: '#E3ECFD',
+    phases: [ ['Brief',0,0],['Kickoff',1,1],['Benchmark',2,3],['Planning',4,4],['Budget',5,5],['Maquettes V1',6,8],['Maquettes V2',9,11],['Maquettes V3',12,13],['Figma client (final)',14,15],['CDC',16,17],['Delivery assets',18,19] ] },
+  { name: 'Application [Client B]', short: 'App [B]', type: 'Application', color: '#C2410C', tint: '#FCE9DE',
+    phases: [ ['Maquettes V2',0,2],['Maquettes V3',3,6],['Figma client (final)',7,10],['CDC',11,14],['Delivery assets',15,19] ] },
+  { name: 'Mise à jour site [Client C]', short: 'MAJ site [C]', type: 'Mise à jour site', color: '#0F766E', tint: '#DDF1EE',
+    phases: [ ['Brief',5,5],['Kickoff',6,6],['Planning',7,7],['Budget',8,8],['Maquettes V1',9,12],['Maquettes V2',13,15],['Figma client (final)',16,17],['Delivery assets',18,19] ] }
+];
+var DOC_FOR = { 'Brief': 'Brief.docx', 'Kickoff': 'Kickoff.pptx', 'Benchmark': 'Benchmark.pptx', 'Planning': 'Planning.xlsx', 'Budget': 'Budget.xlsx',
+  'Maquettes V1': 'Figma', 'Maquettes V2': 'Figma', 'Maquettes V3': 'Figma', 'Figma client (final)': 'Figma client', 'CDC': 'CDC.docx', 'Delivery assets': 'Assets' };
+// [projet, personne, tâche, phase, statut, jour d'échéance (0 = lun 16 nov.), durée en jours ouvrés]
+var TASKS = [
+  [0,'Typhaine','Rédiger le brief','Brief','ok',0,1], [0,'Typhaine','Compte rendu du kickoff','Kickoff','encours',2,2],
+  [0,'Frédéric','Préparer le kickoff client','Kickoff','ok',1,2], [1,'Lou','Préparer la revue V2','Maquettes V2','ok',1,2],
+  [1,'Lou','Intégrer les retours client sur la V2','Maquettes V2','ok',2,2], [0,'Martial','Moodboard','Benchmark','encours',2,3],
+  [0,'Martial','Benchmark concurrents','Benchmark','encours',3,3], [1,'Thibault','Déclinaisons mobiles V3','Maquettes V3','encours',3,3],
+  [1,'Thibault','Maquettes V3 – écrans onboarding','Maquettes V3','encours',4,3], [1,'Jérôme','Inventaire des composants','Maquettes V3','bloque',3,3],
+  [0,'Typhaine','Planning détaillé','Planning','todo',4,3],
+  [0,'Frédéric','Chiffrage & budget','Budget','todo',5,3], [2,'Jérôme','Brief mise à jour','Brief','todo',5,3], [2,'Jérôme','Audit du site existant','Brief','todo',6,3],
+  [0,'Frédéric','Relances fournisseurs','Budget','todo',6,2], [2,'Typhaine','Préparer le kickoff [C]','Kickoff','todo',6,3], [2,'Lou','Kickoff client','Kickoff','todo',6,2],
+  [2,'Typhaine','Planning & budget MAJ','Budget','todo',8,3], [0,'Martial','Maquettes V1 – home & listing','Maquettes V1','todo',8,3], [1,'Thibault','Préparer le Figma client','Figma client (final)','todo',9,3],
+  [1,'Jérôme','Validation Figma client','Figma client (final)','todo',10,2], [0,'Martial','Maquettes V2','Maquettes V2','todo',11,3], [2,'Lou','Maquettes V1 – pages produit','Maquettes V1','todo',12,4],
+  [0,'Thibault','Maquettes V3','Maquettes V3','todo',13,2], [1,'Frédéric','Rédaction du CDC','CDC','todo',13,3],
+  [0,'Typhaine','Figma client final','Figma client (final)','todo',15,2], [0,'Frédéric','CDC refonte','CDC','todo',17,3], [2,'Lou','Figma client final','Figma client (final)','todo',17,3],
+  [1,'Thibault','Export & delivery assets','Delivery assets','todo',19,3], [0,'Martial','Delivery assets','Delivery assets','todo',19,2], [2,'Jérôme','Delivery assets','Delivery assets','todo',19,3]
+];
+var MEETINGS = [
+  [0,'10:00','Point hebdo','int','all'], [1,'14:00','Kickoff [A]','cli',['Typhaine','Frédéric','Martial']],
+  [2,'11:00','Revue V2 App','cli',['Lou','Thibault','Jérôme']], [3,'16:00','Atelier benchmark','int',['Martial','Typhaine']],
+  [5,'10:00','Point hebdo','int','all'], [6,'15:00','Kickoff [C]','cli',['Lou','Jérôme','Typhaine']], [8,'11:00','Budget refonte','cli',['Frédéric','Typhaine']],
+  [10,'10:00','Point hebdo','int','all'], [10,'14:00','Validation Figma App','cli',['Thibault','Jérôme']], [12,'16:00','Revue V2 interne','int',['Martial','Thibault','Lou']],
+  [15,'10:00','Point hebdo','int','all'], [16,'14:00','Figma final [A]','cli',['Typhaine','Martial']], [18,'11:00','Livraison App','cli',['Thibault','Frédéric']]
+];
+// x = congé
+var MEMBERS = [
+  { name: 'Typhaine', off: ['', '', '', ''] },
+  { name: 'Frédéric', off: ['', '', '', ''] },
+  { name: 'Martial', off: ['', '', '', 'x....'] },
+  { name: 'Thibault', off: ['', '', '', ''] },
+  { name: 'Lou', off: ['', '', '', ''] },
+  { name: 'Jérôme', off: ['', '..x..', '', ''] }
+];
+var PCOL = { 'Typhaine': '#BE185D', 'Frédéric': '#0E7490', 'Martial': '#4D7C0F', 'Thibault': '#92400E', 'Lou': '#4338CA', 'Jérôme': '#374151' };
+function ini(n) { return n.slice(0, 2).toUpperCase(); }
+var STATUS = { encours: ['En cours', '#B45309'], todo: ['To do', '#57534E'], ok: ['OK', '#15803D'], bloque: ['Bloqué', '#B91C1C'] };
+var TABS = [ ['table', 'Tableau'], ['gantt', 'Gantt'], ['cal', 'Calendrier hebdo'], ['load', 'Workload'] ];
+function phaseAt(p, d) {
+  for (var i = 0; i < p.phases.length; i++) { if (d >= p.phases[i][1] && d <= p.phases[i][2]) return p.phases[i][0]; }
+  return null;
+}
+function startOf(t) { return Math.max(0, t[5] - t[6] + 1); }
+function meetingsFor(name, d) {
+  return MEETINGS.filter(function (m) { return m[0] === d && (m[4] === 'all' || m[4].indexOf(name) >= 0); });
+}
+function isOff(m, d) { var s = m.off[Math.floor(d / 5)]; return s.charAt(d % 5) === 'x'; }
+function dueInfo(t) {
+  var diff = calDay(t[5]) - calDay(TODAY);
+  if (t[4] === 'ok') return { rel: 'Livré', bg: '#E3F3E8', fg: '#14532D' };
+  if (diff < 0) return { rel: 'En retard de ' + (-diff) + ' j', bg: '#FDECEC', fg: '#991B1B' };
+  if (diff === 0) return { rel: "Aujourd'hui", bg: '#FEF3C7', fg: '#78350F' };
+  if (diff === 1) return { rel: 'Demain', bg: '#FEF3C7', fg: '#78350F' };
+  if (diff <= 6) return { rel: 'Dans ' + diff + ' jours', bg: '#E3ECFD', fg: '#1E3A8A' };
+  return { rel: 'Dans ' + diff + ' jours', bg: '#F1F1EC', fg: '#3F3F3B' };
+}
+function taskVals(t) {
+  var p = PROJECTS[t[0]], di = dueInfo(t), s = startOf(t);
+  return { name: t[2], who: t[1], whoColor: PCOL[t[1]], whoIni: ini(t[1]), phase: t[3], status: STATUS[t[4]][0], statusColor: STATUS[t[4]][1],
+    due: dayLabel(t[5]), dueRel: di.rel, dueBg: di.bg, dueFg: di.fg, span: s === t[5] ? dayShort(s) : dayShort(s) + ' → ' + dayShort(t[5]),
+    doc: DOC_FOR[t[3]], project: p.short, color: p.color, tint: p.tint };
+}
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'table', week: 0, person: null }; }
+  renderVals() {
+    var self = this;
+    var tab = this.state.tab, wk = this.state.week, person = this.state.person;
+    var lo = wk * 5, hi = lo + 4;
+    function setPerson(n) { self.setState({ person: self.state.person === n ? null : n }); }
+    var tabs = TABS.map(function (t) {
+      var sel = t[0] === tab;
+      return { label: t[1], pressed: sel ? 'true' : 'false', bg: sel ? '#1A1A1A' : '#F1F1EC', fg: sel ? '#FFFFFF' : '#1A1A1A',
+        pick: function () { self.setState({ tab: t[0] }); } };
+    });
+    var weeks = WEEKS.map(function (w, i) {
+      var sel = i === wk;
+      return { label: w.label, range: w.range, col: (i * 5 + 2) + ' / span 5', pressed: sel ? 'true' : 'false',
+        bg: sel ? '#1A1A1A' : '#FFFFFF', fg: sel ? '#FFFFFF' : '#1A1A1A', band: sel ? '#E8E8E2' : 'transparent',
+        pick: function () { self.setState({ week: i }); } };
+    });
+    var filterList = [{ name: null, label: "Toute l'équipe", ini: 'ÉQ', color: '#1A1A1A' }].concat(MEMBERS.map(function (m) {
+      return { name: m.name, label: m.name, ini: ini(m.name), color: PCOL[m.name] };
+    }));
+    var personFilters = filterList.map(function (f) {
+      var sel = f.name === person;
+      return { label: f.label, ini: f.ini, color: f.color, pressed: sel ? 'true' : 'false',
+        bg: sel ? f.color : '#FFFFFF', fg: sel ? '#FFFFFF' : '#1A1A1A', avatarBg: sel ? '#FFFFFF' : f.color, avatarFg: sel ? f.color : '#FFFFFF',
+        pick: function () { self.setState({ person: f.name }); } };
+    });
+    var sel = person ? { name: person, color: PCOL[person], ini: ini(person) } : { name: '', color: '#1A1A1A', ini: '' };
+    var groups = PROJECTS.map(function (p, gi) {
+      var ts = TASKS.filter(function (t) { return t[0] === gi && (!person || t[1] === person); })
+        .sort(function (a, b) { return a[5] - b[5]; })
+        .map(function (t) { var v = taskVals(t); v.pickPerson = function () { setPerson(t[1]); }; return v; });
+      var mini = [0, 1, 2, 3, 4].map(function (i) {
+        var d = lo + i, ph = phaseAt(p, d), isToday = d === TODAY;
+        var dues = TASKS.filter(function (t) { return t[0] === gi && t[5] === d && (!person || t[1] === person); })
+          .map(function (t) { return { name: t[2], color: PCOL[t[1]], ini: ini(t[1]) }; });
+        return { label: dayShort(d) + (isToday ? ' · auj.' : ''), weight: isToday ? '700' : '600', fg: isToday ? '#B91C1C' : '#3F3F3B',
+          phase: ph || '—', phaseBg: ph ? p.color : '#EDEDE8', phaseFg: ph ? '#FFFFFF' : '#5B5B57', dues: dues };
+      });
+      return { name: p.name, type: p.type, color: p.color, tint: p.tint, count: ts.length + (ts.length > 1 ? ' tâches' : ' tâche'),
+        tasks: ts, empty: ts.length === 0, notEmpty: ts.length > 0, mini: mini };
+    });
+    var deadlines = person ? TASKS.filter(function (t) { return t[1] === person && t[4] !== 'ok' && t[5] >= Math.max(lo, TODAY) && t[5] <= hi; })
+      .sort(function (a, b) { return a[5] - b[5]; }).map(taskVals) : [];
+    var todayCol = (TODAY + 2) + ' / span 1', weekCol = (lo + 2) + ' / span 5';
+    var days = DAY_NUMS.map(function (n, i) {
+      var isToday = i === TODAY;
+      return { label: String(n), col: (i + 2) + ' / span 1', weight: isToday ? '700' : '500', fg: isToday ? '#B91C1C' : '#5B5B57',
+        band: Math.floor(i / 5) === wk ? '#F1F1EC' : 'transparent' };
+    });
+    var gantt = PROJECTS.map(function (p) {
+      var s = p.phases[0][1], e = p.phases[p.phases.length - 1][2];
+      return { name: p.name, color: p.color, weekCol: weekCol, todayCol: todayCol, span: (s + 2) + ' / ' + (e + 3),
+        phases: p.phases.map(function (ph) { return { name: ph[0], col: (ph[1] + 2) + ' / ' + (ph[2] + 3) }; }) };
+    });
+    var weekDays = DAY_NAMES.map(function (d, i) {
+      var idx = lo + i, isToday = idx === TODAY;
+      return { label: d + ' ' + DAY_NUMS[idx], bg: isToday ? '#1A1A1A' : '#F1F1EC', fg: isToday ? '#FFFFFF' : '#1A1A1A' };
+    });
+    function activeTasks(name, d) {
+      return TASKS.filter(function (t) { return t[1] === name && startOf(t) <= d && d <= t[5]; });
+    }
+    var calendar = MEMBERS.map(function (m) {
+      var cells = [0, 1, 2, 3, 4].map(function (i) {
+        var d = lo + i;
+        if (isOff(m, d)) return { off: true, free: false, tasks: [], meetings: [] };
+        var ts = activeTasks(m.name, d).map(function (t) {
+          var p = PROJECTS[t[0]];
+          return { name: t[2], project: p.short, color: p.color, tint: p.tint, isDue: t[5] === d };
+        });
+        var ms = meetingsFor(m.name, d).map(function (x) { return { time: x[1], title: x[2], color: x[3] === 'cli' ? '#7C3AED' : '#475569' }; });
+        return { off: false, free: ts.length === 0 && ms.length === 0, tasks: ts, meetings: ms };
+      });
+      return { name: m.name, color: PCOL[m.name], ini: ini(m.name), cells: cells };
+    });
+    var load = MEMBERS.map(function (m) {
+      var total = 0;
+      var ds = [0, 1, 2, 3, 4].map(function (i) {
+        var d = lo + i;
+        if (isOff(m, d)) return { label: 'Congé', pct: '0%', color: '#1D4ED8' };
+        var h = activeTasks(m.name, d).length * 3 + meetingsFor(m.name, d).length;
+        total += h;
+        return { label: h + ' h', pct: Math.min(100, Math.round(h / 10 * 100)) + '%', color: h > 7 ? '#B91C1C' : '#1D4ED8' };
+      });
+      return { name: m.name, color: PCOL[m.name], ini: ini(m.name), days: ds, total: total + ' h' };
+    });
+    var legend = PROJECTS.map(function (p) { return { label: p.short, color: p.color }; });
+    return { tabs: tabs, weeks: weeks, isTable: tab === 'table', isGantt: tab === 'gantt', isCal: tab === 'cal', isLoad: tab === 'load',
+      personFilters: personFilters, hasPerson: !!person, sel: sel, deadlines: deadlines, noDeadlines: !!person && deadlines.length === 0,
+      groups: groups, days: days, gantt: gantt, weekDays: weekDays, calendar: calendar, load: load, legend: legend,
+      current: WEEKS[wk], members: MEMBERS.map(function (m) { return { name: m.name, color: PCOL[m.name] }; }) };
+  }
+}
+</script>
+</body>
+</html>
